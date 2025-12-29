@@ -1,4 +1,4 @@
-# Força a codificação para evitar erros de acentos (????)
+# Força codificação UTF-8 para remover os "????" definitivamente
 $OutputEncoding = [System.Text.Encoding]::UTF8
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -25,52 +25,43 @@ $xml = @"
             </StackPanel>
         </Border>
 
-        <ScrollViewer Grid.Row="1" Margin="10" VerticalScrollBarVisibility="Auto">
-            <Grid>
-                <Grid x:Name="PanelTweaks" Visibility="Visible">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Margin="15">
-                        <TextBlock Text="Otimizações Essenciais" Foreground="DodgerBlue" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
-                        <CheckBox x:Name="chkPower" Content="Ativar Plano Lost e Vinizin Oprimizer" Foreground="White" Margin="0,4"/>
-                        <CheckBox x:Name="chkRestore" Content="Criar Ponto de Restauração" Foreground="White" Margin="0,4"/>
-                        <CheckBox x:Name="chkTemp" Content="Limpar Arquivos Temporários" Foreground="White" Margin="0,4"/>
-                    </StackPanel>
-                </Grid>
-
-                <StackPanel x:Name="PanelInstall" Visibility="Collapsed" Margin="20">
-                    <TextBlock Text="Instalação de Aplicativos" Foreground="Cyan" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Text="Selecione os programas que deseja instalar via Winget." Foreground="White" Margin="0,10"/>
-                    </StackPanel>
-
-                <StackPanel x:Name="PanelConfig" Visibility="Collapsed" Margin="20">
-                    <TextBlock Text="Configurações de Sistema" Foreground="Cyan" FontSize="18" FontWeight="Bold"/>
-                    <CheckBox Content="Habilitar WSL" Foreground="White" Margin="0,5"/>
-                    <CheckBox Content="Habilitar Hyper-V" Foreground="White" Margin="0,5"/>
-                </StackPanel>
-
-                <StackPanel x:Name="PanelUpdates" Visibility="Collapsed" Margin="20">
-                    <TextBlock Text="Gerenciamento de Atualizações" Foreground="DodgerBlue" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20">
-                        <Button Content="Configuração Padrão" Width="200" Height="40" Margin="10"/>
-                        <Button Content="Segurança Balanceada" Width="200" Height="40" Margin="10"/>
-                        <Button Content="Desativar Tudo" Width="200" Height="40" Margin="10" Foreground="Red"/>
-                    </StackPanel>
-                </StackPanel>
-
-                <StackPanel x:Name="PanelMicroWin" Visibility="Collapsed" Margin="20">
-                    <TextBlock Text="MicroWin - Criação de ISO" Foreground="Cyan" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Text="Instruções para descompactar e otimizar sua ISO do Windows." Foreground="White" TextWrapping="Wrap" Margin="0,10"/>
+        <Grid Grid.Row="1" Margin="20">
+            <Grid x:Name="PanelTweaks" Visibility="Visible">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Otimizações Essenciais" Foreground="DodgerBlue" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                    <CheckBox x:Name="chkPower" Content="Ativar Plano Lost e Vinizin Oprimizer" Foreground="White" Margin="0,5"/>
+                    <CheckBox Content="Limpar Arquivos Temporários" Foreground="White" Margin="0,5"/>
+                    <CheckBox Content="Desativar Telemetria" Foreground="White" Margin="0,5"/>
                 </StackPanel>
             </Grid>
-        </ScrollViewer>
+
+            <Grid x:Name="PanelInstall" Visibility="Collapsed">
+                <TextBlock Text="Instalação de Aplicativos (Winget/Chocolatey)" Foreground="Cyan" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                <TextBlock Text="Navegue pelas categorias para instalar softwares essenciais." Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
+
+            <Grid x:Name="PanelConfig" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="Recursos e Reparos" Foreground="Cyan" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                    <Button Content="Resetar Rede" Width="150" HorizontalAlignment="Left" Margin="0,5"/>
+                    <Button Content="Winget Reinstall" Width="150" HorizontalAlignment="Left" Margin="0,5"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid x:Name="PanelMicroWin" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="MicroWin - Otimização de ISO" Foreground="Cyan" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                    <TextBlock Text="Use esta aba para remover telemetria e bloatware de ISOs do Windows." Foreground="LightGray" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
         <Border Grid.Row="2" Background="#1c1e26" BorderBrush="Cyan" BorderThickness="0,1,0,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="25,0">
-                <Button x:Name="RunBtn" Content="EXECUTAR OTIMIZAÇÃO" Width="220" Height="40" Background="RoyalBlue" Foreground="White" FontWeight="Bold" Margin="0,0,15,0" Cursor="Hand"/>
-            </StackPanel>
+            <Button x:Name="RunBtn" Content="EXECUTAR OTIMIZAÇÃO" Width="220" Height="40" Background="RoyalBlue" Foreground="White" FontWeight="Bold" HorizontalAlignment="Left" Margin="25,0"/>
         </Border>
     </Grid>
 </Window>
@@ -79,30 +70,22 @@ $xml = @"
 $reader = [XML.XmlReader]::Create([System.IO.StringReader]$xml)
 $window = [Windows.Markup.XamlReader]::Load($reader)
 
-# --- LÓGICA DE NAVEGAÇÃO ENTRE ABAS ---
-$panéis = @("PanelTweaks", "PanelInstall", "PanelConfig", "PanelUpdates", "PanelMicroWin")
-
-function Show-Tab($tabName) {
-    foreach ($p in $panéis) {
-        $window.FindName($p).Visibility = "Collapsed"
-    }
-    $window.FindName($tabName).Visibility = "Visible"
+# --- LÓGICA DE TROCA DE ABAS ---
+$panels = @{
+    "TabInstall" = $window.FindName("PainelInstall")
+    "TabTweaks"  = $window.FindName("PainelTweaks")
+    "TabConfig"  = $window.FindName("PainelConfig")
+    "TabMicroWin" = $window.FindName("PainelMicroWin")
 }
 
-$window.FindName("TabTweaks").Add_Click({ Show-Tab "PanelTweaks" })
-$window.FindName("TabInstall").Add_Click({ Show-Tab "PanelInstall" })
-$window.FindName("TabConfig").Add_Click({ Show-Tab "PanelConfig" })
-$window.FindName("TabUpdates").Add_Click({ Show-Tab "PanelUpdates" })
-$window.FindName("TabMicroWin").Add_Click({ Show-Tab "PanelMicroWin" })
+function Switch-Tab($activeTabName) {
+    $panels.Values | ForEach-Object { $_.Visibility = "Collapsed" }
+    $panels[$activeTabName].Visibility = "Visible"
+}
 
-# --- EXECUÇÃO ---
-$window.FindName("RunBtn").Add_Click({
-    if ($window.FindName("chkPower").IsChecked) {
-        $guid = (powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61).Split(' ')[-1]
-        powercfg -changename $guid "Lost e Vinizin Oprimizer"
-        powercfg /setactive $guid
-    }
-    [Windows.Forms.MessageBox]::Show("Otimização concluída!", "Lost Engine")
-})
+$window.FindName("TabInstall").Add_Click({ Switch-Tab "TabInstall" })
+$window.FindName("TabTweaks").Add_Click({ Switch-Tab "TabTweaks" })
+$window.FindName("TabConfig").Add_Click({ Switch-Tab "TabConfig" })
+$window.FindName("TabMicroWin").Add_Click({ Switch-Tab "TabMicroWin" })
 
 $window.ShowDialog()
